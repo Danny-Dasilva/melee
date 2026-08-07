@@ -347,41 +347,26 @@ void psInitDataBank(int bank, int* cmdBank, int* texBank, u32* ref,
     }
 }
 
-// @TODO: Currently 62.67% match - ASM bytes identical, relocation differences
+// @TODO: Currently 99.20% match - register allocation differences remain
 void hsd_80398A08(u32 unused)
 {
-    extern u16 hsd_804D78DC;
-    s32 i;
+    int i;
 
     HSD_ObjAllocInit(&hsd_804D0F60.alloc_data, 0x98, 4);
     PAD_STACK(24);
 
-    i = 0;
-    hsd_804D0908[0] = NULL;
-    hsd_804D0908[1] = NULL;
-    hsd_804D0908[2] = NULL;
-    hsd_804D0908[3] = NULL;
-    hsd_804D0908[4] = NULL;
-    hsd_804D0908[5] = NULL;
-    hsd_804D0908[6] = NULL;
-    hsd_804D0908[7] = NULL;
-    hsd_804D0908[8] = NULL;
-    hsd_804D0908[9] = NULL;
-    hsd_804D0908[10] = NULL;
-    hsd_804D0908[11] = NULL;
-    hsd_804D0908[12] = NULL;
-    hsd_804D0908[13] = NULL;
-    hsd_804D0908[14] = NULL;
-    hsd_804D0908[15] = NULL;
+    for (i = 0; i < 16; i++) {
+        hsd_804D0908[i] = NULL;
+    }
     hsd_804D78E2[0] = 0;
-    hsd_804D78DC = 0;
+    numPeakParticles = 0;
     for (i = 0; i < 0x41; i++) {
         psCmdListArray[i] = NULL;
-        psNumCmdList[i] = 0;
         psFormGroupArray[i] = NULL;
         ptclref_804D0E5C[i] = NULL;
         psTexGroupArray[i] = NULL;
-        hsd_804D0908[i] = NULL;
+        psNumCmdList[i] = 0;
+        hsd_804D0908[0x10 + i] = NULL;
     }
     psCallback = NULL;
     hsd_804D08E8[0] = NULL;
