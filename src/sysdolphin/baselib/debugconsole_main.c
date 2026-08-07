@@ -2126,7 +2126,7 @@ static char* lbl_804D6304 = "| %d BL xxxxxxxxxxx  %c%c %c%c%c%c %s |";
 static char* lbl_804D6308 = "|   BEPI %08X BRPN %08X |";
 static char* lbl_804D630C = "+-------------------------------+";
 
-// @TODO: Currently 86.10% match - .bss.0 relocation affects register
+// @TODO: Currently 95.27% match - .bss.0 relocation affects register
 // allocation
 void hsd_80396E40(int keycode)
 {
@@ -2135,8 +2135,6 @@ void hsd_80396E40(int keycode)
     void* saved;
     s32 row;
     s32 i;
-    s32 spr_u;
-    s32 spr_l;
     s32 bat_u;
     s32 bat_l;
     char* perm;
@@ -2147,9 +2145,7 @@ void hsd_80396E40(int keycode)
     s32 var_u;
     s32 var_s;
     s32 bit;
-    char* ptr;
     s32 j;
-    char ch;
 
     saved = hsd_804CF810.x50;
     row = sp->x1C - 1;
@@ -2163,11 +2159,9 @@ void hsd_80396E40(int keycode)
         hsd_80394434(lbl_804D6300);
     }
     i = 0;
-    spr_u = 0x219;
-    spr_l = 0x218;
     do {
-        bat_u = baselib_mfspr(spr_u);
-        bat_l = baselib_mfspr(spr_l);
+        bat_u = baselib_mfspr(0x219 + i * 2);
+        bat_l = baselib_mfspr(0x218 + i * 2);
         switch (bat_u & 2) {
         case 0:
             perm = "N/A";
@@ -2212,28 +2206,17 @@ void hsd_80396E40(int keycode)
         }
         sprintf(buf, lbl_804D6304, i, var_s, var_u, var_w, var_i, var_m, var_g,
                 perm);
-        ptr = buf;
         for (j = 0; j < 11; j++) {
-            if (bat_l & (1 << (0x1F - (j + 0x13)))) {
-                ch = '1';
-            } else {
-                ch = '0';
-            }
-            ptr[7] = ch;
-            ptr++;
+            buf[j + 7] = bat_l & (1 << (0x1F - (j + 0x13))) ? '1' : '0';
         }
         hsd_804CF810.x4 = 0x106;
-        hsd_804CF810.x8 = (hsd_804CF810.x40 - 0x28) - (row + 1) * 14;
-        row--;
+        hsd_804CF810.x8 = (hsd_804CF810.x40 - 0x28) - (row-- + 1) * 14;
         hsd_80394434(buf);
         sprintf(buf, lbl_804D6308, bat_l & 0xFFFC0000, bat_u & 0xFFFC0000);
         hsd_804CF810.x4 = 0x106;
-        hsd_804CF810.x8 = (hsd_804CF810.x40 - 0x28) - (row + 1) * 14;
-        row--;
+        hsd_804CF810.x8 = (hsd_804CF810.x40 - 0x28) - (row-- + 1) * 14;
         hsd_80394434(buf);
         i++;
-        spr_u += 2;
-        spr_l += 2;
     } while (i < 4);
     hsd_804CF810.x4 = 0x106;
     hsd_804CF810.x8 = (hsd_804CF810.x40 - 0x28) - (row + 1) * 14;
