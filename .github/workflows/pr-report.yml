@@ -1,0 +1,122 @@
+name: pr-report
+run-name: PR objdiff report
+
+# Fork-side replacement for the upstream `diff` CI mode, which is disabled on
+# forks (build.yml guards on github.repository == 'doldecomp/melee') and uses a
+# private build container. This workflow rebuilds the PR base and head with the
+# auto-downloaded toolchain and comments an objdiff change report on the PR.
+
+on:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      pr:
+        description: PR number to report on
+        required: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+concurrency:
+  group: pr-report-${{ github.event.pull_request.number || inputs.pr }}
+  cancel-in-progress: true
+
+jobs:
+  report:
+    name: Report
+    if: github.repository != 'doldecomp/melee'
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Resolve PR
+      id: pr
+      run: |
+        pr='${{ github.event.pull_request.number || inputs.pr }}'
+        base=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$pr" -q .base.sha)
+        head=$(gh api "repos/$GITHUB_REPOSITORY/pulls/$pr" -q .head.sha)
+        git fetch origin "$base" "$head"
+        {
+          echo "pr=$pr"
+          echo "base=$base"
+          echo "head=$head"
+        } >> "$GITHUB_OUTPUT"
+
+    # The build step checks out the PR's base/head, which may predate this
+    # workflow — keep the comment script outside the tree.
+    - name: Stash comment script
+      run: cp .github/scripts/pr_report_comment.py "$RUNNER_TEMP/"
+
+    - name: Restore original DOL
+      env:
+        ORIG_DOL_KEY: ${{ secrets.ORIG_DOL_KEY }}
+      run: |
+        mkdir -p orig/GALE01/sys
+        openssl enc -d -aes-256-cbc -pbkdf2 \
+          -in .github/orig/main.dol.enc \
+          -out orig/GALE01/sys/main.dol \
+          -pass env:ORIG_DOL_KEY
+
+    - name: Install ninja
+      run: |
+        sudo apt-get update -q
+        sudo apt-get install -y -q ninja-build
+
+    - name: Build base and head reports
+      run: |
+        set -eou pipefail
+        base='${{ steps.pr.outputs.base }}'
+        head='${{ steps.pr.outputs.head }}'
+        report=build/GALE01/report.json
+
+        function build_report {
+          python3 configure.py --max-errors 0 --verbose --version GALE01 --sym off
+          ninja all_source "$report"
+        }
+
+        git checkout --detach "$base"
+        build_report
+        cp "$report" "$RUNNER_TEMP/baseline.json"
+
+        git checkout --detach "$head"
+        build_report
+        cp "$report" "$RUNNER_TEMP/current.json"
+
+        build/tools/objdiff-cli report changes \
+          -o "$RUNNER_TEMP/changes.json" \
+          "$RUNNER_TEMP/baseline.json" "$RUNNER_TEMP/current.json"
+
+    - name: Comment report on PR
+      run: |
+        set -eou pipefail
+        python3 "$RUNNER_TEMP/pr_report_comment.py" \
+          "$RUNNER_TEMP/baseline.json" "$RUNNER_TEMP/current.json" \
+          "$RUNNER_TEMP/changes.json" \
+          '${{ steps.pr.outputs.base }}' '${{ steps.pr.outputs.head }}' \
+          > "$RUNNER_TEMP/comment.md"
+        marker='<!-- fork-pr-report -->'
+        pr='${{ steps.pr.outputs.pr }}'
+        cid=$(gh api "repos/$GITHUB_REPOSITORY/issues/$pr/comments" --paginate \
+          -q "[.[] | select(.body | startswith(\"$marker\")) | .id][0]")
+        if [ -n "$cid" ] && [ "$cid" != "null" ]; then
+          gh api -X PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$cid" \
+            -F "body=@$RUNNER_TEMP/comment.md" > /dev/null
+        else
+          gh api "repos/$GITHUB_REPOSITORY/issues/$pr/comments" \
+            -F "body=@$RUNNER_TEMP/comment.md" > /dev/null
+        fi
+
+    - name: Upload report artifact
+      if: success() || failure()
+      uses: actions/upload-artifact@v4
+      with:
+        name: GALE01_report
+        path: |
+          build/GALE01/report.json
