@@ -49,6 +49,11 @@ jobs:
           echo "head=$head"
         } >> "$GITHUB_OUTPUT"
 
+    # The build step checks out the PR's base/head, which may predate this
+    # workflow — keep the comment script outside the tree.
+    - name: Stash comment script
+      run: cp .github/scripts/pr_report_comment.py "$RUNNER_TEMP/"
+
     - name: Restore original DOL
       env:
         ORIG_DOL_KEY: ${{ secrets.ORIG_DOL_KEY }}
@@ -91,7 +96,7 @@ jobs:
     - name: Comment report on PR
       run: |
         set -eou pipefail
-        python3 .github/scripts/pr_report_comment.py \
+        python3 "$RUNNER_TEMP/pr_report_comment.py" \
           "$RUNNER_TEMP/baseline.json" "$RUNNER_TEMP/current.json" \
           "$RUNNER_TEMP/changes.json" \
           '${{ steps.pr.outputs.base }}' '${{ steps.pr.outputs.head }}' \
