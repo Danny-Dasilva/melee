@@ -2012,61 +2012,83 @@ int fn_801884F8(void)
 
 void fn_80188550(int arg0)
 {
-    TrainingModeState* state = &lbl_80473700;
-    int current = state->count;
+    int current;
     int j;
     int to_remove;
 
-    if (arg0 != current) {
-        if (arg0 > state->count) {
-            PlayerInitData* player;
+    current = (&lbl_80473700)->count;
+
+    if (arg0 != current)
+    {
+        if (arg0 > (&lbl_80473700)->count)
+        {
+            u8* walk;
             int i;
             int skip;
             int remaining;
 
-            skip = state->count;
-            player = state->players;
+            skip = (&lbl_80473700)->count;
             remaining = arg0 - current;
+            walk = (u8*)&lbl_80473700;
             i = 0;
             j = 0;
 
-            for (i = 0; i < 4; i++, player++) {
-                if (i != 0) {
-                    if (skip == 0) {
-                        if (i != 0) {
-                            player->slot_type = 1;
-                        } else {
-                            player->slot_type = j;
+            for (i = 0; i < 4; i++, walk += 0x24)
+            {
+                if (i != 0)
+                {
+                    if (skip == 0)
+                    {
+                        if (i != 0)
+                        {
+                            walk[0x75] = 1;
                         }
-                        gm_8016EDDC(i, player);
-                        if (--remaining == 0) {
+                        else
+                        {
+                            walk[0x75] = j;
+                        }
+                        gm_8016EDDC(i, (PlayerInitData*)(walk + 0x74));
+                        if ((--remaining) == 0)
+                        {
                             break;
                         }
-                    } else {
+                    }
+                    else
+                    {
                         skip--;
                     }
                 }
             }
-        } else {
+        }
+        else
+        {
             to_remove = current - arg0;
             j = 3;
-            for (; j >= 0; j--) {
-                if (j != 0 && to_remove != 0) {
-                    if (current != 3) {
+
+            for (; j >= 0; j--)
+            {
+                if ((j != 0) && (to_remove != 0))
+                {
+                    if (current != 3)
+                    {
                         fn_8016EF98(to_remove + 1);
-                    } else {
+                    }
+                    else
+                    {
                         fn_8016EF98(j);
                     }
-                    if (--to_remove == 0) {
+
+                    if ((--to_remove) == 0)
+                    {
                         break;
                     }
                 }
             }
         }
-        state->count = arg0;
+
+        (&lbl_80473700)->count = arg0;
     }
 }
-
 void fn_80188644(void)
 {
     int i;
