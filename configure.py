@@ -523,7 +523,7 @@ config.libs = [
     MeleeLib(
         "cm (Camera)",
         [
-            Object(NonMatching, "melee/cm/camera.c"),
+            Object(Matching, "melee/cm/camera.c"),
             Object(Matching, "melee/cm/cmsnap.c"),
         ],
     ),
@@ -542,7 +542,7 @@ config.libs = [
     MeleeLib(
         "mp (Map)",
         [
-            Object(NonMatching, "melee/mp/mpcoll.c"),
+            Object(Matching, "melee/mp/mpcoll.c"),
             Object(NonMatching, "melee/mp/mplib.c"),
             Object(NonMatching, "melee/mp/mpisland.c"),
         ],
@@ -1257,7 +1257,7 @@ config.libs = [
             Object(Matching, "melee/it/items/itbox.c"),
             Object(Matching, "melee/it/items/ittaru.c"),
             Object(Matching, "melee/it/items/itegg.c"),
-            Object(NonMatching, "melee/it/items/itkusudama.c"),
+            Object(Matching, "melee/it/items/itkusudama.c"),
             Object(Matching, "melee/it/items/itparasol.c"),
             Object(Matching, "melee/it/items/itgshell.c"),
             Object(Matching, "melee/it/items/itrshell.c"),
