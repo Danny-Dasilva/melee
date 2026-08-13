@@ -1,5 +1,6 @@
 #include "sc/forward.h"
 
+#include <dolphin/mtx.h>
 #include <baselib/gobj.h>
 
 struct IfStockUserData {
@@ -24,9 +25,16 @@ struct ifStock_804A1378_per_player {
     int stocks;
 };
 
+struct IfStockStealAnim {
+    Vec3 start;
+    Vec3 mid;
+    Vec3 end;
+};
+
 /// @todo merge with IfStockUserData
 struct ifStock_804A1378_x204 {
-    unsigned char x0[0x54];
+    unsigned char x0[0xC];
+    struct IfStockStealAnim anim[2];
 };
 
 struct ifStock_804A1378 {
