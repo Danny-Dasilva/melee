@@ -685,11 +685,8 @@ void grBigBlueRoute_8020C85C(Ground_GObj* gobj)
     Ground* gp = GET_GROUND(gobj);
     PAD_STACK(8);
 
-    if (!((f32) gp->u.car.x108 < 1.0f + yakumono_param->x40)) {
-        return;
-    }
-
-    if (gp->u.car.x10A-- >= 0) {
+    // Flip the ternary shape using De Morgan's law
+    if (!(((f32) gp->u.car.x108 < 1.0f + yakumono_param->x40) || gp->u.car.x10A-- >= 0)) {
         return;
     }
 
