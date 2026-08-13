@@ -150,13 +150,13 @@ static void mnStageSw_802359C8(MnStageSwData* data)
 
 static s32 mnStageSw_80235C58(u8 arg0)
 {
+    s32 next;
     s32 low;
     s32 found;
     s32 i;
     s32 idx;
     u8 high;
     s32 curr;
-    s32 next;
     u8 end;
     u8 start;
 
