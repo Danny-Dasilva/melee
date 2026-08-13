@@ -3024,9 +3024,11 @@ block_392:
 static inline void animateCharModel(HSD_JObj* jobj, f32 frame)
 {
     HSD_JObj* child;
+    HSD_JObj* c;
 
     lb_80011E24(jobj, &child, 4, -1);
-    HSD_ForeachAnim(child, JOBJ_TYPE, TOBJ_MASK, HSD_AObjReqAnim, AOBJ_ARG_AF,
+    c = child;
+    HSD_ForeachAnim(c, JOBJ_TYPE, TOBJ_MASK, HSD_AObjReqAnim, AOBJ_ARG_AF,
                     frame);
     HSD_JObjAnimAll(child);
     HSD_ForeachAnim(child, JOBJ_TYPE, TOBJ_MASK, HSD_AObjStopAnim,
@@ -3103,8 +3105,11 @@ void fn_80262648(HSD_GObj* gobj)
                 animateCharModel(jobj, 16.0f);
             }
             lb_80011E24(jobj, &sp24, 3, -1);
-            HSD_ForeachAnim(sp24, JOBJ_TYPE, MOBJ_MASK, HSD_AObjReqAnim,
-                            AOBJ_ARG_AF, (f32) (model->x6 * 0x28));
+            {
+                HSD_JObj* c = sp24;
+                HSD_ForeachAnim(c, JOBJ_TYPE, MOBJ_MASK, HSD_AObjReqAnim,
+                                AOBJ_ARG_AF, (f32) (model->x6 * 0x28));
+            }
             model->x7 = 0;
         }
     }
