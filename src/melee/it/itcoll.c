@@ -792,8 +792,8 @@ f32 it_80270CD8(Item* ip, HitCapsule* hit)
 
 void it_80270E30(Item_GObj* arg_item_gobj)
 {
-    u32 index;
-    f32 sp18;
+    u32 index2;
+    UNUSED f32 unused_float4;
     Vec3 hurt_pos;
     DamageLogEntry* damage_log;
     HSD_GObj* item_owner_gobj;
@@ -805,14 +805,14 @@ void it_80270E30(Item_GObj* arg_item_gobj)
     f32 max_knockback;
     UNUSED f32 unused_float2;
     UNUSED f32 unused_float3;
-    UNUSED f32 unused_float4;
+    f32 sp18;
     UNUSED s32 unused_int0;
     UNUSED s32 unused_int1;
     s32 element;
     Item* item;
     Item* arg_item;
     DamageLogEntry* temp_r29;
-    u32 index2;
+    u32 index;
     HitCapsule* hit2;
     ItemAttr* attr;
     Vec3* hurt_coll_pos;
@@ -822,8 +822,8 @@ void it_80270E30(Item_GObj* arg_item_gobj)
 
     if (it_804D6D18 != 0U) {
         arg_item = arg_item_gobj->user_data;
-        max_knockback = -1.0f;
         damage_log = it_804A0E70;
+        max_knockback = -1.0f;
         index = 0;
         while (index < it_804D6D18) {
             hit = damage_log->x8;
