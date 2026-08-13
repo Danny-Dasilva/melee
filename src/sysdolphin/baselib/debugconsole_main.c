@@ -2561,7 +2561,7 @@ void* fn_80397814(void* arg)
         next_retrace = VIGetRetraceCount();
     } while (next_retrace == retrace);
     retrace = next_retrace;
-    keybuf = &hsd_804CF810.xC0;
+    keybuf = &sp->xC0;
     do {
         hsd_803975D4();
         do {
@@ -2688,13 +2688,13 @@ void* fn_80397814(void* arg)
     } while (*keybuf != 0x402);
 
     /* Configure video */
-    hsd_804CF810.xD4 = ctx;
-    VIConfigure(hsd_804CF810.x30);
+    sp->xD4 = ctx;
+    VIConfigure(sp->x30);
     VISetBlack(0);
 
     /* Clear display list */
     {
-        ExcptNode** head = (ExcptNode**) &hsd_804CF810.xD0;
+        ExcptNode** head = (ExcptNode**) &sp->xD0;
         ExcptNode* next;
         ExcptNode* cur;
         keybuf = (u32*) head;
@@ -2710,33 +2710,54 @@ void* fn_80397814(void* arg)
     /* Link exception node */
     if (&lbl_8040B8C4 != NULL) {
         ((ExcptNode*) &lbl_8040B8C4)->next = NULL;
-        hsd_804CF810.xD0 = &lbl_8040B8C4;
+        *(void**) keybuf = &lbl_8040B8C4;
         if (((ExcptNode*) &lbl_8040B8C4)->callback != NULL) {
             ((ExcptNode*) &lbl_8040B8C4)->callback((ExcptNode*) &lbl_8040B8C4);
         }
     }
 
     /* Set initialized flag */
-    hsd_804CF810.x0_b5 = 1;
+    sp->x0_b5 = 1;
     hsd_80394668();
 
     /* Initial display setup */
     {
+        s32* x3C_ptr;
+        s32* x20_ptr;
+        s32* x14_ptr;
+        s32* x18_ptr;
+        s32* c8_ptr;
+        s32* cc_ptr;
+        s32* fb_ptr;
+        s32* fb2_ptr;
         u32 retrace2;
         u32 next_retrace2;
+        s32* col_ptr;
+        s32* nrows_ptr;
+        s32* fb_array;
         s32* size_ptr;
         void* lbl_ptr;
         s32 fb_idx;
         PSNode* node;
 
-        hsd_80394544(hsd_804CF810.x18, hsd_804CF810.x14, hsd_804CF810.x20,
-                     hsd_804CF810.x1C, 20, hsd_804CF810.x40 - 40,
-                     (&hsd_804CF810.x24)[hsd_804CF810.x34], hsd_804CF810.x3C,
-                     hsd_804CF810.x40, hsd_804CF810.x44, (s32) lbl_804088B8,
-                     NULL);
+        fb_ptr = (s32*) &sp->x40;
+        fb2_ptr = (s32*) &sp->x44;
+        col_ptr = &sp->x34;
+        x18_ptr = &sp->x18;
+        x14_ptr = &sp->x14;
+        x20_ptr = &sp->x20;
+        nrows_ptr = &sp->x1C;
+        fb_array = &sp->x24;
+        x3C_ptr = &sp->x3C;
 
-        hsd_804CF810.xC8 = 0;
-        hsd_804CF810.xCC = hsd_804CF810.x1C - 1;
+        hsd_80394544(*x18_ptr, *x14_ptr, *x20_ptr, *nrows_ptr, 20,
+                     *fb_ptr - 40, fb_array[*col_ptr], *x3C_ptr, *fb_ptr,
+                     *fb2_ptr, (s32) lbl_804088B8, NULL);
+
+        sp->xC8 = 0;
+        c8_ptr = &sp->xC8;
+        cc_ptr = &sp->xCC;
+        *cc_ptr = *nrows_ptr - 1;
 
         /* Process display node */
         {
@@ -2754,10 +2775,10 @@ void* fn_80397814(void* arg)
 
         /* Flush and display first frame */
         size_ptr = &sp->x48;
-        fb_idx = hsd_804CF810.x34;
-        DCFlushRange((void*) (&hsd_804CF810.x24)[fb_idx], *size_ptr);
-        fb_idx = hsd_804CF810.x34;
-        VISetNextFrameBuffer((void*) (&hsd_804CF810.x24)[fb_idx]);
+        fb_idx = *col_ptr;
+        DCFlushRange((void*) fb_array[fb_idx], *size_ptr);
+        fb_idx = *col_ptr;
+        VISetNextFrameBuffer((void*) fb_array[fb_idx]);
         VIFlush();
 
         retrace2 = VIGetRetraceCount();
@@ -2801,20 +2822,19 @@ void* fn_80397814(void* arg)
 
             if (result != 0) {
                 /* Advance frame buffer index */
-                s32 idx = hsd_804CF810.x34;
-                idx = (idx + 1) % hsd_804CF810.x38;
-                hsd_804CF810.x34 = idx;
+                s32 idx = *col_ptr;
+                s32 nbufs = sp->x38;
+                idx = (idx + 1) % nbufs;
+                *col_ptr = idx;
 
                 hsd_80394668();
 
-                hsd_80394544(
-                    hsd_804CF810.x18, hsd_804CF810.x14, hsd_804CF810.x20,
-                    hsd_804CF810.x1C, 20, hsd_804CF810.x40 - 40,
-                    (&sp->x24)[hsd_804CF810.x34], hsd_804CF810.x3C,
-                    hsd_804CF810.x40, hsd_804CF810.x44, (s32) lbl_ptr, NULL);
+                hsd_80394544(*x18_ptr, *x14_ptr, *x20_ptr, *nrows_ptr, 20,
+                             *fb_ptr - 40, (&sp->x24)[*col_ptr], *x3C_ptr,
+                             *fb_ptr, *fb2_ptr, (s32) lbl_ptr, NULL);
 
-                hsd_804CF810.xC8 = 0;
-                hsd_804CF810.xCC = hsd_804CF810.x1C - 1;
+                *c8_ptr = 0;
+                *cc_ptr = *nrows_ptr - 1;
 
                 /* Process display node */
                 node = *(PSNode**) keybuf;
@@ -2828,9 +2848,9 @@ void* fn_80397814(void* arg)
                 }
 
                 /* Flush and display */
-                fb_idx = hsd_804CF810.x34;
+                fb_idx = *col_ptr;
                 DCFlushRange((void*) (&sp->x24)[fb_idx], *size_ptr);
-                fb_idx = hsd_804CF810.x34;
+                fb_idx = *col_ptr;
                 VISetNextFrameBuffer((void*) (&sp->x24)[fb_idx]);
                 VIFlush();
             }
