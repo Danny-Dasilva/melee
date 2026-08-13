@@ -186,14 +186,10 @@ version40:
     num = ((s32*) cmdBank)[1];
     num2 = ((s32*) cmdBank)[2] + num;
     base = (s32*) cmdBank + 3 - num;
-    ptr = (s32*) cmdBank;
-    i = 0;
-    while (i < (s32) cmdBank->header.nb_reloc) {
-        if (ptr[3] != 0) {
-            ptr[3] += (s32) cmdBank;
+    for (i = 0; i < (s32) cmdBank->header.nb_reloc; i++) {
+        if (((s32*) cmdBank)[i + 3] != 0) {
+            ((s32*) cmdBank)[i + 3] += (s32) cmdBank;
         }
-        ptr++;
-        i++;
     }
 
 done_cmd:
@@ -216,14 +212,10 @@ done_cmd:
         s32* cur = groups;
         s32 k;
 
-        if (num_groups >= 1) {
-            k = num_groups;
-            do {
-                if (cur[0] != 0) {
-                    cur[0] += (s32) texBank;
-                }
-                cur++;
-            } while (--k != 0);
+        for (k = 0; k < num_groups; k++) {
+            if (groups[k] != 0) {
+                groups[k] += (s32) texBank;
+            }
         }
 
         cur = groups;
@@ -272,9 +264,7 @@ done_cmd:
                     /* Multiple palette pointers (palnum > 0) */
                     s32 ti;
                     s32 ofs;
-                    ti = (s32) tg->num;
-                    (void) ti;
-                    ofs = ti * 4;
+                    ofs = (ti = (s32) tg->num) * 4;
                     for (; (u32) ti < ((HSD_PSTexGroup*) cur[0])->num +
                                           ((HSD_PSTexGroup*) cur[0])->palnum;
                          ti++, ofs += 4)
@@ -350,38 +340,23 @@ void psInitDataBank(int bank, int* cmdBank, int* texBank, u32* ref,
 // @TODO: Currently 62.67% match - ASM bytes identical, relocation differences
 void hsd_80398A08(u32 unused)
 {
-    extern u16 hsd_804D78DC;
-    s32 i;
+    int i;
 
     HSD_ObjAllocInit(&hsd_804D0F60.alloc_data, 0x98, 4);
-    PAD_STACK(24);
+    PAD_STACK(12);
 
-    i = 0;
-    hsd_804D0908[0] = NULL;
-    hsd_804D0908[1] = NULL;
-    hsd_804D0908[2] = NULL;
-    hsd_804D0908[3] = NULL;
-    hsd_804D0908[4] = NULL;
-    hsd_804D0908[5] = NULL;
-    hsd_804D0908[6] = NULL;
-    hsd_804D0908[7] = NULL;
-    hsd_804D0908[8] = NULL;
-    hsd_804D0908[9] = NULL;
-    hsd_804D0908[10] = NULL;
-    hsd_804D0908[11] = NULL;
-    hsd_804D0908[12] = NULL;
-    hsd_804D0908[13] = NULL;
-    hsd_804D0908[14] = NULL;
-    hsd_804D0908[15] = NULL;
+    for (i = 0; i < 16; i++) {
+        hsd_804D0908[i] = NULL;
+    }
     hsd_804D78E2[0] = 0;
-    hsd_804D78DC = 0;
+    numPeakParticles = 0;
     for (i = 0; i < 0x41; i++) {
         psCmdListArray[i] = NULL;
-        psNumCmdList[i] = 0;
         psFormGroupArray[i] = NULL;
         ptclref_804D0E5C[i] = NULL;
         psTexGroupArray[i] = NULL;
-        hsd_804D0908[i] = NULL;
+        psNumCmdList[i] = 0;
+        ((void**) hsd_804D0908)[0x10 + i] = NULL;
     }
     psCallback = NULL;
     hsd_804D08E8[0] = NULL;
@@ -1583,7 +1558,7 @@ void* hsd_8039930C(void* pp_arg, void* prev_arg)
                     dz = jobj->mtx[2][3];
                     dz -= pp->pos.z;
                     vel_mag = sqrtf(vel_mag_sq);
-                    dist_sq = dy * dy + dx * dx;
+                    dist_sq = dx * dx + dy * dy;
                     dist_sq += dz * dz;
                     if (dist_sq == 0.0) {
                         break;

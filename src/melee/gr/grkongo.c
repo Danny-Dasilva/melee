@@ -877,9 +877,8 @@ void grKongo_801D69B0(HSD_GObj* gobj)
     mpJointSetB10(4);
 }
 
-static inline void rad_compare(f32 a, f32 b, f32* ret)
+static inline void rad_compare(f32 a, f32 c, f32* ret)
 {
-    f32 c = deg_to_rad * b;
     if (a > c) {
         *ret = c;
     } else {
@@ -890,25 +889,21 @@ static inline void rad_compare(f32 a, f32 b, f32* ret)
     }
 }
 
-static inline void rad_compare_b(f32 a, f32 b, f32* ret)
+static inline void rad_compare_b(f32 a, f32* ret)
 {
-    f32 c = deg_to_rad * b;
-    if (a > c) {
-        c = -c;
-    } else if (a < -c) {
-    } else {
-        c = 0.0F;
-    }
+    f32 c = deg_to_rad * yakumono_param->unk94;
+    c = (a > c) ? -c : ((a < -c) ? c : 0.0F);
     *ret = (f32) (0.99 * (f64) (c + *ret));
 }
 
-static inline void rad_compare_c(f32 a, f32 b, f32 d, f32* ret)
+static inline void rad_compare_c(f32 a, struct grKongo_YakumonoParam* p,
+                                 f32* ret)
 {
-    f32 c = deg_to_rad * b;
+    f32 c = deg_to_rad * p->unk9C;
     if (a > c) {
-        *ret += d * (a - c);
+        *ret += p->unkA0 * (a - c);
     } else if (a < -c) {
-        *ret += d * (a + c);
+        *ret += p->unkA0 * (a + c);
     }
 }
 
@@ -920,138 +915,63 @@ typedef struct unk_struct_x14 {
     f32 unk10;
 } unk_struct_x14;
 
-static inline void grKongo_801D6AFC_apply(f32* deltas,
-                                          _struct_grKg_803E188C_0x18* entries)
-{
-    int i;
-
-    for (i = 0; i < 0xF; i++) {
-        f32 delta = deltas[i];
-        if (delta != 0.0) {
-            entries[i].unkC += delta;
-        }
-    }
-}
-
 void grKongo_801D6AFC(void)
 {
-    f32 sp44[15];
-    _struct_grKg_803E188C_0x18* entries;
-    f32* var_r5;
-    f32* deltas;
-    f32 sp8[15];
+    f32 arrA[15];
+    f32 arrB[15];
+    f32* p;
+    f32* q;
+    _struct_grKg_803E188C_0x18* e;
+    int i;
 
-    {
-        f32* p = sp44;
-        s32 i = 0;
-        do {
-            *p++ = 0.0f;
-            i++;
-        } while (i < 15);
+    q = arrA;
+    p = q;
+    for (i = 15; i != 0; i--) {
+        *p++ = 0.0F;
     }
-    var_r5 = sp44;
-    entries = grKg_803E188C;
-    {
-        s32 var_ctr_2 = 5;
-        _struct_grKg_803E188C_0x18* var_r3_2 = grKg_803E188C;
-        do {
-            int i;
-            for (i = 0; i < 3; i++) {
-                rad_compare_b(var_r3_2->unkC - var_r3_2->unk8,
-                              yakumono_param->unk94, &var_r3_2->unk10);
-                var_r3_2++;
+    p = q;
+    for (i = 0; i < 15; i++) {
+        rad_compare_b(grKg_803E188C[i].unkC - grKg_803E188C[i].unk8,
+                      &grKg_803E188C[i].unk10);
+    }
+    e = grKg_803E188C;
+    for (i = 15; i != 0; i--) {
+        e->unk10 += *p++;
+        e++;
+    }
+    for (i = 0; i < 15; i++) {
+        rad_compare(grKg_803E188C[i].unk10, deg_to_rad * yakumono_param->unk98,
+                    &grKg_803E188C[i].unk10);
+    }
+    for (i = 0; i < 15; i++) {
+        grKg_803E188C[i].unkC += grKg_803E188C[i].unk10;
+        rad_compare(grKg_803E188C[i].unkC, deg_to_rad * yakumono_param->unk90,
+                    &grKg_803E188C[i].unkC);
+    }
+    p = arrB;
+    q = p;
+    for (i = 15; i != 0; i--) {
+        *q++ = 0.0F;
+    }
+    for (i = 0; i < 15; i++) {
+        if (grKg_803E188C[i].unk2 == 0) {
+            if ((i != 0) && (grKg_803E188C[i - 1].unk2 == 0)) {
+                rad_compare_c(grKg_803E188C[i - 1].unkC -
+                                  grKg_803E188C[i].unkC,
+                              yakumono_param, &arrB[i]);
             }
-            var_ctr_2 -= 1;
-        } while (var_ctr_2 != 0);
-    }
-    {
-        s32 var_ctr_3 = 3;
-        _struct_grKg_803E188C_0x18* var_r3_3 = grKg_803E188C;
-        f32 temp_f0;
-        do {
-            var_r3_3->unk10 += var_r5[0];
-            var_r3_3[1].unk10 += var_r5[1];
-            var_r3_3[2].unk10 += var_r5[2];
-            var_r3_3[3].unk10 += var_r5[3];
-            temp_f0 = var_r5[4];
-            var_r5 += 5;
-            var_r3_3[4].unk10 += temp_f0;
-            var_r3_3 += 5;
-            var_ctr_3 -= 1;
-        } while (var_ctr_3 != 0);
-    }
-    {
-        s32 var_ctr_4 = 3;
-        _struct_grKg_803E188C_0x18* var_r3_4 = grKg_803E188C;
-        do {
-            int i;
-            for (i = 0; i < 5; i++) {
-                rad_compare(var_r3_4->unk10, yakumono_param->unk98,
-                            &var_r3_4->unk10);
-                var_r3_4++;
+            if (((u32) i != 0xEU) && (grKg_803E188C[i + 1].unk2 == 0)) {
+                rad_compare_c(grKg_803E188C[i + 1].unkC -
+                                  grKg_803E188C[i].unkC,
+                              yakumono_param, &arrB[i]);
             }
-            var_ctr_4 -= 1;
-        } while (var_ctr_4 != 0);
+        }
     }
-    deltas = sp8;
-    {
-        s32 var_ctr_5 = 3;
-        _struct_grKg_803E188C_0x18* var_r3_5 = grKg_803E188C;
-        do {
-            int i;
-            for (i = 0; i < 5; i++) {
-                var_r3_5->unkC += var_r3_5->unk10;
-                rad_compare(var_r3_5->unkC, yakumono_param->unk90,
-                            &var_r3_5->unkC);
-                var_r3_5++;
-            }
-            var_ctr_5 -= 1;
-        } while (var_ctr_5 != 0);
+    for (i = 0; i < 15; i++) {
+        if (p[i] != 0.0) {
+            grKg_803E188C[i].unkC += p[i];
+        }
     }
-    {
-        s32 var_ctr_6 = 3;
-        f32* delta_init = deltas;
-        do {
-            delta_init[0] = 0.0f;
-            delta_init[1] = 0.0f;
-            delta_init[2] = 0.0f;
-            delta_init[3] = 0.0f;
-            delta_init[4] = 0.0f;
-            delta_init += 5;
-            var_ctr_6 -= 1;
-        } while (var_ctr_6 != 0);
-    }
-    {
-        s32 var_ctr_7 = 0xF;
-        _struct_grKg_803E188C_0x18* entry = grKg_803E188C;
-        f32* delta_ptr = deltas;
-        s32 i = 0;
-        do {
-            if (entry->unk2 == 0) {
-                if ((i != 0) && (entry[-1].unk2 == 0)) {
-                    {
-                        volatile f32 stiffness = yakumono_param->unkA0;
-                        rad_compare_c(entry[-1].unkC - entry->unkC,
-                                      yakumono_param->unk9C, stiffness,
-                                      delta_ptr);
-                    }
-                }
-                if (((u32) i != 0xEU) && (entry[1].unk2 == 0)) {
-                    {
-                        volatile f32 stiffness = yakumono_param->unkA0;
-                        rad_compare_c(entry[1].unkC - entry->unkC,
-                                      yakumono_param->unk9C, stiffness,
-                                      delta_ptr);
-                    }
-                }
-            }
-            entry += 1;
-            delta_ptr += 1;
-            i += 1;
-            var_ctr_7 -= 1;
-        } while (var_ctr_7 != 0);
-    }
-    grKongo_801D6AFC_apply(deltas, entries);
 }
 
 #if 0
@@ -1101,14 +1021,12 @@ static ? grKg_803B7FB0;                             /* unable to generate initia
 
 void grKongo_801D7134(HSD_GObj* gobj, s32 arg1)
 {
-    s32 line_id;
     Ground* gp;
     _struct_grKg_803E188C_0x18* table;
     _struct_grKg_803E188C_0x18* entry;
     HSD_JObj* jobj;
     f32 angle;
     f32 old_angle;
-    f32 temp;
     f32 displacement;
     u32 i;
     PAD_STACK(0x18);
@@ -1165,25 +1083,20 @@ void grKongo_801D7134(HSD_GObj* gobj, s32 arg1)
         gp->u.kongo.xD8 = -(angle - old_angle);
     }
 
-    entry = (_struct_grKg_803E188C_0x18*) ((u8*) grKg_803E16E0 + 0x1AC);
     for (i = 0; i < 15; i++) {
-        HSD_JObjSetRotationX(entry->unk4, entry->unkC);
-        entry++;
+        HSD_JObjSetRotationX(grKg_803E188C[i].unk4, grKg_803E188C[i].unkC);
     }
 
     mpLib_80057424(4);
-    entry = (_struct_grKg_803E188C_0x18*) ((u8*) grKg_803E16E0 + 0x1AC);
-    line_id = 0x28;
     for (i = 0; i < 15; i++) {
-        temp = entry->unk14;
+        s32 line_id = 0x28 + i * 2;
+        f32 temp = grKg_803E188C[i].unk14;
         mpLib_80056758(line_id, 0.0f, temp, 0.0f, temp);
         if ((s32) i == 0) {
             mpLib_80056758(line_id - 1, 0.0f, temp, 0.0f, temp);
         } else if (i == 14) {
             mpLib_80056758(line_id + 1, 0.0f, temp, 0.0f, temp);
         }
-        line_id += 2;
-        entry++;
     }
 }
 

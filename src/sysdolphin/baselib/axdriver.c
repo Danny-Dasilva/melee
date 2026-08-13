@@ -1026,17 +1026,11 @@ int AXDriverSetupAux(int channel, AXDriverAuxType type, void* param)
     return result;
 }
 
+extern const RevHiDims AXDriver_803B95F8;
+extern const s32 AXDriver_803B9618[];
+
 s32 HSD_AudioGetAuxHeapSize(AXDriverAuxType type, void* param)
 {
-    static const RevHiDims AXDriver_803B95F8 = {
-        { 0x6FD, 0x7CF, 0x91D, 0x1B1, 0x95, 0x2F, 0x49, 0x43 },
-    };
-    static const s32 AXDriver_803B9618[] = {
-        0x6FD,
-        0x7CF,
-        0x1B1,
-        0x95,
-    };
     s32 result;
     int i;
     int k;
@@ -1076,7 +1070,7 @@ s32 HSD_AudioGetAuxHeapSize(AXDriverAuxType type, void* param)
                 result += (AXDriver_803B9618[i] + 2) * 4;
             }
             for (i = 0; i < 2; i++) {
-                result += (AXDriver_803B9618[i + 2] + 2) * 4;
+                result += ((AXDriver_803B9618[i + 2] + 2) * 4 & 0xFF);
             }
             result += ((s32) (32000.0F *
                               ((struct AXFX_REVERBSTD*) param)->preDelay)) *

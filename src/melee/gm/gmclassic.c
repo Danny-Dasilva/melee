@@ -643,8 +643,8 @@ void gmClassic_801B3500(GameScene* arg0)
 {
     gmClassicIntroData* sd;
     gm_803DDEC8Struct* entry;
-    UnkAllstarData* ad;
     int enemy_count;
+    UnkAllstarData* ad;
     int ally_count;
     int i;
     struct GameCache* gc;
