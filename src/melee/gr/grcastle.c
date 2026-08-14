@@ -2030,3 +2030,5 @@ f32 grCastle_801D0FF0(void)
 {
     return 50.0f * Ground_801C0498();
 }
+
+// handoff_marker
