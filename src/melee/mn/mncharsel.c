@@ -192,12 +192,21 @@ static inline void drawTimeText(HSD_Text* x, HSD_Text* y, int hours,
     }
 }
 
+static inline f32 tenths(f32 v)
+{
+    return (f32) (int) (10.0f * v) / 10.0f;
+}
+
 static inline HSD_JObj* inline3(int i, float x)
 {
     HSD_JObj* sp5C;
+    HSD_JObj* root;
+    HSD_JObj* node;
     float temp_f1_6 = x + 1;
-    lb_80011E24(mnCharSel_804D6CC0, &sp5C, i, -1);
-    HSD_ForeachAnim(sp5C, JOBJ_TYPE, MOBJ_MASK, HSD_AObjReqAnim, AOBJ_ARG_AF,
+    root = mnCharSel_804D6CC0;
+    lb_80011E24(root, &sp5C, i, -1);
+    node = sp5C;
+    HSD_ForeachAnim(node, JOBJ_TYPE, MOBJ_MASK, HSD_AObjReqAnim, AOBJ_ARG_AF,
                     temp_f1_6);
     HSD_JObjAnimAll(sp5C);
     HSD_ForeachAnim(sp5C, JOBJ_TYPE, MOBJ_MASK, HSD_AObjStopAnim, AOBJ_ARG_AOV,
@@ -217,10 +226,8 @@ void mnCharSel_8025C020(int arg0)
     u8 sp7A;
     u8 sp79;
     u8 sp78;
-    u8 sp74[4];
-    HSD_JObj* sp70;
 
-    u8 i = mnCharSel_803F0DFC.doors[0].sel_icon;
+    s32 i = mnCharSel_803F0DFC.doors[0].sel_icon;
     u8 hud_index = icons[i].ft_hudindex;
     if (arg0 != 0) {
         if (mnCharSel_804D6CDC != 0U) {
@@ -313,15 +320,11 @@ void mnCharSel_8025C020(int arg0)
     case STADIUM_HOMERUN:
         if (arg0 == 0) {
             if (lbLang_IsSavedLanguageJP()) {
-                HSD_SisLib_803A70A0(
-                    mnCharSel_804D6CDC, 0, "%.1f",
-                    (f32) (int) (10.0f * (gm_801631CC(hud_index) / 100.0f)) /
-                        10.0f);
+                HSD_SisLib_803A70A0(mnCharSel_804D6CDC, 0, "%.1f",
+                                    tenths(gm_801631CC(hud_index) / 100.0f));
             } else {
-                HSD_SisLib_803A70A0(
-                    mnCharSel_804D6CDC, 0, "%.1f",
-                    (f32) (int) (10.0f * (gm_801631CC(hud_index) / 30.4788f)) /
-                        10.0f);
+                HSD_SisLib_803A70A0(mnCharSel_804D6CDC, 0, "%.1f",
+                                    tenths(gm_801631CC(hud_index) / 30.4788f));
             }
         }
         if (lbLang_IsSavedLanguageJP()) {
