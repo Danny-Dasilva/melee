@@ -215,8 +215,8 @@ if not is_windows():
 if not args.asm:
     config.asm_dir = None
 
-# Handled internally
-config.generate_compile_commands = False
+config.generate_compile_commands = False  # Handled internally
+config.extra_clang_flags.extend([f"-isystembuild/{config.version}/include"])
 
 # Tool versions
 config.binutils_tag = "2.42-2"
@@ -336,6 +336,7 @@ includes_base = [
     "src/MSL",
     "src/Runtime",
     "extern/dolphin/include",
+    f"build/{config.version}/include",
 ]
 
 cflags_melee = [
@@ -417,6 +418,7 @@ def SysdolphinLib(lib_name: str, objects: Objects) -> Library:
         includes=[
             *includes_base,
             "src/sysdolphin",
+            f"build/{config.version}/GALE01/sysdolphin",
         ],
         category="hsd",
     )
@@ -496,11 +498,11 @@ config.libs = [
             Object(Matching, "melee/lb/lbvector.c"),
             Object(NonMatching, "melee/lb/lbshadow.c"),
             Object(Testing, "melee/lb/lb_00F9.c"),
-            Object(Matching , "melee/lb/lbspdisplay.c"),
+            Object(Matching, "melee/lb/lbspdisplay.c"),
             Object(Matching, "melee/lb/lb_013B.c"),
             Object(Matching, "melee/lb/lb_0146.c"),
             Object(Matching, "melee/lb/lbarq.c"),
-            Object(NonMatching, "melee/lb/lbmemory.c"),
+            Object(Matching, "melee/lb/lbmemory.c"),
             Object(Matching, "melee/lb/lbheap.c"),
             Object(Matching, "melee/lb/lbfile.c"),
             Object(Matching, "melee/lb/lbarchive.c"),
@@ -1296,7 +1298,7 @@ config.libs = [
             Object(Matching, "melee/it/items/itfoxillusion.c"),
             Object(Matching, "melee/it/items/itlinkbomb.c"),
             Object(Matching, "melee/it/items/itlinkboomerang.c"),
-            Object(NonMatching, "melee/it/items/itlinkhookshot.c"),
+            Object(Matching, "melee/it/items/itlinkhookshot.c"),
             Object(Matching, "melee/it/items/itlinkarrow.c"),
             Object(Matching, "melee/it/items/itnesspkfire.c"),
             Object(Matching, "melee/it/items/itnesspkfirepillar.c"),
@@ -1817,7 +1819,7 @@ config.libs = [
             ),
             Object(Matching, "sysdolphin/baselib/sobjlib.c"),
             Object(NonMatching, "sysdolphin/baselib/sislib.c"),
-            Object(Matching, "sysdolphin/baselib/hsd_40FF.c"),
+            Object(Matching, "sysdolphin/baselib/sislib_font.c"),
             Object(Matching, "sysdolphin/baselib/hsd_4D11.c"),
             Object(NonMatching, "sysdolphin/baselib/hsd_3A94.c"),
             Object(Matching, "sysdolphin/baselib/hsd_3B27.c"),
