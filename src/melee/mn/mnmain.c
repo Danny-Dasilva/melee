@@ -51,6 +51,9 @@
 
 /* 22C068 */ static void mn_8022C068(HSD_LObj*, int, int);
 
+extern f32 mn_804DBDA8; // 0.0f
+extern f32 mn_804DBDE8; // 0.0f
+
 static HSD_GObj* mn_804D6BA8;
 static HSD_GObj* mn_804D6BAC;
 static HSD_GObj* mn_804D6BB0;
@@ -813,7 +816,7 @@ HSD_GObj* mn_80229B2C(void)
     HSD_JObjAddAnimAll(temp_r3, MenMainBack_Top.animjoint,
                        MenMainBack_Top.matanim_joint,
                        MenMainBack_Top.shapeanim_joint);
-    HSD_JObjReqAnimAll(temp_r3, 0.0F);
+    HSD_JObjReqAnimAll(temp_r3, mn_804DBDA8);
     HSD_JObjAnimAll(temp_r3);
     return temp_r30;
 }
@@ -3243,7 +3246,7 @@ void mn_8022F360(HSD_AObj* aobj, void* obj, u32 arg2)
     HSD_FObj* fobj = aobj->fobj;
     while (fobj != NULL) {
         if (fobj->obj_type == arg2 || arg2 == 0xFF) {
-            HSD_FObjStopAnim(fobj, obj, NULL, 0.0F);
+            HSD_FObjStopAnim(fobj, obj, NULL, mn_804DBDE8);
         }
         fobj = fobj->next;
     }
