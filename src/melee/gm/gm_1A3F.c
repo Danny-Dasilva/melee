@@ -4,7 +4,7 @@
 #include "gmmain_lib.h"
 
 #include "db/db.h"
-#include "dolphin/vi/vifuncs.h"
+#include "gm/gm_1A36.h"
 #include "gm/gmscdata.h"
 #include "lb/lbaudio_ax.h"
 #include "lb/lbdvd.h"
@@ -14,6 +14,7 @@
 #include "lb/types.h"
 #include "ty/toy.h"
 
+#include <dolphin/vi.h>
 #include <baselib/controller.h>
 #include <baselib/devcom.h>
 #include <baselib/sislib.h>
@@ -150,7 +151,7 @@ void gm_801A4014(GameMode* mode)
             ;
         gmMainLib_8015FBA4();
         gm_GetAllGameModes();
-        memzero(&gm_80479D30, 0x14);
+        memzero(&gm_80479D30, sizeof(gm_80479D30));
         gm_801A3EF4();
         gmMainLib_8046B0F0.x0 = true;
         gm_ChangeGameModeAfterCurrentScene(GM_BOOT);

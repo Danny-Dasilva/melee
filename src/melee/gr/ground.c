@@ -721,7 +721,7 @@ void Ground_801C10B8(HSD_GObj* arg0, HSD_GObjEvent arg1)
         HSD_GObj* unk4;
         HSD_GObjEvent unk8;
     }* temp_r3;
-    temp_r3 = HSD_MemAlloc(0xC);
+    temp_r3 = HSD_MemAlloc(sizeof(*temp_r3));
     if (temp_r3 != NULL) {
         temp_r3->unk0 = stage_info.x6A4;
         temp_r3->unk4 = arg0;
@@ -2950,6 +2950,7 @@ static inline float vec_len(Vec3* v)
     return sqrtf(x2 + y2 + z2);
 }
 
+#ifdef MUST_MATCH
 /// MSL sqrtf expansion with caller-owned volatile storage. Keeping each
 /// expansion's temporary in the caller preserves the retail stack-slot order.
 static inline float sqrtf_store(float x, volatile float* y)
@@ -2964,6 +2965,9 @@ static inline float sqrtf_store(float x, volatile float* y)
     }
     return x;
 }
+#else
+#define sqrtf_store(x, y) sqrtf(x)
+#endif
 
 /// @todo replace with fog.h inlines
 #define FOG_ASSERT(line, cond)                                                \

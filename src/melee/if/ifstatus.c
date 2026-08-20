@@ -1,7 +1,6 @@
 #include "ifstatus.h"
 
 #include "ifall.h"
-#include "m2c_macros.h"
 #include "placeholder.h"
 
 #include "gm/gm_unsplit.h"
@@ -200,18 +199,18 @@ void ifStatus_PercentOnDeathAnimationThink(UnkX* value, s32 arg1, s32 arg2)
         if (fabsf_bitwise(jobj_r30->translate.x) <
             100.0f) { // 100.0f @ lbl_804DDA6C
             float f = (&value->x34_vec.x)[i];
-            jobj_r30 = (void*) jobj_get(jobj_r30, value, i);
+            jobj_r30 = (HSD_JObj*) jobj_get(jobj_r30, value, i);
             ASSERT_NOT_NULL(jobj_r30, 1102);
             jobj_r30->translate.x += f;
             jobj_flagCheckSetMtxDirtySub(jobj_r30);
         }
-        jobj_r30 = (void*) jobj_get(jobj_r30, value, i);
+        jobj_r30 = (HSD_JObj*) jobj_get(jobj_r30, value, i);
         ASSERT_NOT_NULL(jobj_r30, 1006);
 
         if (jobj_r30->translate.y > -100.0f) {
             float f = (&value->x44_vec.x)[i];
-            jobj_r30 = (void*) jobj_get(jobj_r30, value, i);
-            jobj_r30 = (void*) jobj_get(jobj_r30, value, i);
+            jobj_r30 = (HSD_JObj*) jobj_get(jobj_r30, value, i);
+            jobj_r30 = (HSD_JObj*) jobj_get(jobj_r30, value, i);
             ASSERT_NOT_NULL(jobj_r30, 1114);
             jobj_r30->translate.y += f;
             jobj_flagCheckSetMtxDirtySub(jobj_r30);
@@ -426,7 +425,7 @@ void ifStatus_802F4EDC(HSD_GObj* gobj)
     }
 
     /* Update colors when damage changes */
-    if ((s16) state->old_damage != (s16) state->damage_percent) {
+    if (state->old_damage != state->damage_percent) {
         if (Player_GetMoreFlagsBit2((s8) state->player_slot)) {
             /* Stamina mode: 0-100% range */
             clamped_damage = state->damage_percent;
@@ -861,7 +860,7 @@ void ifStatus_802F6508(s32 arg0)
         hud_player->player_slot = (u8) arg0;
         hud_player->unk9 = 0;
         ifStatus_802F61FC(hud_player, (u8) arg0);
-        ifStatus_802F5EC0(hud_player, (u8) ((unsigned long long) arg0));
+        ifStatus_802F5EC0(hud_player, (u8) ((u64) arg0));
         if (rules->x3_0 && gm_8016B238() == 0) {
             un_802FF364(arg0);
         }
@@ -918,7 +917,7 @@ void ifStatus_802F66A4(void)
 void ifStatus_802F6788(u8 player_idx)
 {
     IfDamageState* player_hud;
-    s8 p_idx = (u8) player_idx;
+    s8 p_idx = player_idx;
     player_hud = &ifStatus_GetHUDInfo()->players[p_idx & 0xFF];
     if (player_hud->HUD_parent_entity != NULL) {
         HSD_GObjPLink_80390228(player_hud->HUD_parent_entity);

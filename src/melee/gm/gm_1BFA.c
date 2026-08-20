@@ -65,8 +65,8 @@ void gm_801BFA6C(GameScene* arg0)
 
     temp_r31 = gm_GetGameSceneLoadDataCallback(arg0);
     temp_r3 = gm_GetChallengerData();
-    temp_r31->x0 = (u8) temp_r3->x4;
-    temp_r31->x1 = (u8) temp_r3->x2;
+    temp_r31->x0 = temp_r3->x4;
+    temp_r31->x1 = temp_r3->x2;
     lb_8001C550();
     lb_8001D164(0);
     lb_8001CE00();
@@ -109,7 +109,7 @@ void gm_801BFBA8(GameScene* arg0)
     gm_8016247C((s32) mei->match_end.player_standings[0].xE);
     temp_r0 = mei->match_end.result;
     if ((temp_r0 != OUTCOME_NO_CONTEST) && (temp_r0 != OUTCOME_RETRY) &&
-        ((s8) mei->match_end.player_standings[0].stocks != 0))
+        (mei->match_end.player_standings[0].stocks != 0))
     {
         gm_UnlockCKind((s32) temp_r31->x4);
     } else {
@@ -168,7 +168,7 @@ void gm_801BFCFC(GameScene* arg0)
     var_r30 = 0;
     memzero(gm_8049E558, 0x42);
     p3 = &gm_8049E558[0x44];
-    memzero(p3, 0x125);
+    memzero(p3, TY_TROPHY_COUNT);
     Toy_803124BC();
     var_r27_2_s11 = var_r27_2;
     p3 = gm_8049E558;
@@ -188,7 +188,7 @@ void gm_801BFCFC(GameScene* arg0)
     var_r26 = p3;
     var_r26 += 0x44;
     var_r28 = var_r26;
-    for (var_r25_2 = 0; var_r25_2 < 0x125; var_r25_2++) {
+    for (var_r25_2 = 0; var_r25_2 < TY_TROPHY_COUNT; var_r25_2++) {
         if (gmMainLib_8015DA1C(var_r25_2) != 0) {
             if (gmMainLib_8015DA90(var_r25_2) == 0) {
                 u32* KP = gmMainLib_8015D970(var_r25_2);
@@ -197,9 +197,8 @@ void gm_801BFCFC(GameScene* arg0)
                 Toy_SetUnlockState((s16) var_r25_2, 1);
             }
             *var_r28 = Toy_803048C0(var_r25_2);
-            var_r31 =
-                (void**) gm_801BFC60(0x3E, var_r30, var_r25_2,
-                                     *gmMainLib_8015D970(var_r25_2), var_r31);
+            var_r31 = gm_801BFC60(0x3E, var_r30, var_r25_2,
+                                  *gmMainLib_8015D970(var_r25_2), var_r31);
             var_r30 = var_r30 + 1;
         }
         var_r28 += 1;
@@ -215,7 +214,7 @@ void gm_801BFCFC(GameScene* arg0)
         }
     }
 
-    for (var_r27_2_s11 = 0; var_r27_2_s11 < 0x125; var_r27_2_s11++) {
+    for (var_r27_2_s11 = 0; var_r27_2_s11 < TY_TROPHY_COUNT; var_r27_2_s11++) {
         if ((*var_r26 < Toy_803048C0(var_r27_2_s11) ||
              Toy_803048C0(var_r27_2_s11) == 0) &&
             gmMainLib_8015DA1C(var_r27_2_s11) != 0)

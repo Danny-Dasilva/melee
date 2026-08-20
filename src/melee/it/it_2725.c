@@ -645,8 +645,7 @@ void it_80273670(Item_GObj* item_gobj, int arg1, f32 arg8)
         }
         desc = item->xD0_itemStateDesc;
         HSD_JObjAddAnimAll(item_jobj1, desc->x0_anim_joint,
-                           desc->x4_matanim_joint,
-                           (HSD_ShapeAnimJoint*) desc->x8_parameters);
+                           desc->x4_matanim_joint, desc->x8_parameters);
         lb_8000BA0C(item_jobj1, item->x5D0_animFrameSpeed);
         HSD_JObjReqAnimAll(item_jobj1, arg8);
     }
@@ -1025,7 +1024,7 @@ void it_80274574(Item_GObj* item_gobj)
 
 static inline void HSD_JObjSetScale_2(HSD_JObj* jobj, Vec3* scale)
 {
-    ((jobj) ? ((void) 0) : __assert("jobj.h", 760, "jobj"));
+    (jobj ? ((void) 0) : __assert("jobj.h", 760, "jobj"));
     jobj->scale = *scale;
     if (!(jobj->flags & (1 << 25))) {
         (HSD_JObjSetMtxDirty)(jobj);

@@ -1,7 +1,5 @@
 #include "lb/lb_00B0.h"
 
-#include <placeholder.h>
-
 #include "sc/types.h" // IWYU pragma: keep
 
 #include <math.h>
@@ -634,7 +632,7 @@ void lb_8000C868(HSD_Joint* arg0, HSD_JObj* arg1, HSD_JObj* arg2, float arg8,
         spB4.x = arg1->rotate.x;
         spB4.y = arg1->rotate.y;
         spB4.z = arg1->rotate.z;
-        EulerToQuat(&spB4, (Quaternion*) &sp94);
+        EulerToQuat(&spB4, (&sp94));
     }
 
     sum.x = SQ(spA4.x + sp94.x);
@@ -762,9 +760,6 @@ HSD_LObj* lb_8000CDC0(HSD_LObj* cur)
         }
         cur = lobj_next(cur);
     }
-#ifdef BUGFIX
-    return NULL;
-#endif
 }
 
 void lb_8000CE30(HSD_DObj* dobj, HSD_DObj* next)

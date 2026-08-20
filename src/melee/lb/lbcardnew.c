@@ -2,7 +2,9 @@
 
 #include "lbcardnew.static.h"
 
-#include <strtoul.h> // IWYU pragma: keep
+#include <ctype.h>
+#include <stdlib.h>
+#include <string.h>
 #include <dolphin/card.h>
 #include <baselib/hsd_3A94.h>
 #include <sysdolphin/baselib/hsd_3B27.h>
@@ -624,6 +626,7 @@ int lb_8001B14C(void)
     int count;
     int i;
     struct SnapshotNode** scan;
+    static size_t const nodes_len = 127;
 
     head = NULL;
     disk_id = DVDGetCurrentDiskID();
@@ -634,7 +637,7 @@ int lb_8001B14C(void)
     if (_p(free_files) != NULL) {
         *_p(free_files) = _p(unused_files);
     }
-    nodes = HSD_MemAlloc(0x5F4);
+    nodes = HSD_MemAlloc(sizeof(*nodes) * nodes_len);
     node = nodes;
     company = (char*) stat[0].company;
     game = (char*) stat[0].gameName;
@@ -1145,6 +1148,6 @@ void lb_8001C5A4(void)
 void lb_8001C5BC(void)
 {
     hsd_803B2374();
-    lb_80019EF0(NULL, NULL, NULL, NULL);
+    lb_80019EF0(0, NULL, NULL, NULL);
     _p(x8AC) = 0;
 }

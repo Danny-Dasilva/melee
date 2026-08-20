@@ -222,9 +222,7 @@ void pl_8003D644(int arg0, int arg1, int arg2, int arg3)
             temp_r26->xD64 = 6;
         } else {
             temp_r3_2 = Player_GetStaleMoveTableIndexPtr2(temp_r23);
-            if (((u32) temp_r3_2->xD60 != 0) &&
-                ((s32) temp_r3_2->xD64 == arg0))
-            {
+            if ((temp_r3_2->xD60 != 0) && ((s32) temp_r3_2->xD64 == arg0)) {
                 pl_80038824(temp_r23, 0x79);
                 temp_r3_2->xD60 = 0;
                 temp_r3_2->xD64 = 6;
@@ -921,7 +919,7 @@ void fn_8003F294(int slot, int index)
                 threshold = pl_804D6470->x1C, stats->hits.total, &table->xDAC);
     pl_8003906C(slot, 0x13, 0L, pl_804D6470->x2C, threshold = pl_804D6470->x30,
                 stats->attacks.total, &table->xDB0);
-    threshold = (unsigned int) pl_804D6470->xE4;
+    threshold = pl_804D6470->xE4;
     pl_8003906C(slot, 0x5C, 0L, pl_804D6470->xE0, threshold, table->xD70,
                 &table->xDB4);
     pl_8003906C(slot, 0x99, 0L, pl_804D6470->x130,

@@ -218,7 +218,7 @@ s32 mnDiagram_GetPlayPercentage(u8 is_name_mode, u8 player_index)
     s32 i;
     f32 zero = 0.0f;
 
-    if ((u8) is_name_mode != 0) {
+    if (is_name_mode != 0) {
         total_play_time = 0.0f;
         i = 0;
         do {
@@ -254,8 +254,7 @@ s32 mnDiagram_GetAveragePlayerCount(int is_name_mode, u8 player_index)
     f32 temp_f31_2;
 
     if ((u8) is_name_mode != 0) {
-        if ((u16) GetPersistentNameData((s32) player_index)->match_count != 0)
-        {
+        if (GetPersistentNameData((s32) player_index)->match_count != 0) {
             temp_f31_2 =
                 (f32) GetPersistentNameData((s32) player_index)->match_count;
             return (s32) (100.0f *
@@ -265,7 +264,7 @@ s32 mnDiagram_GetAveragePlayerCount(int is_name_mode, u8 player_index)
         }
         return 0;
     }
-    if ((u16) GetPersistentFighterData((s32) player_index)->match_count != 0) {
+    if (GetPersistentFighterData((s32) player_index)->match_count != 0) {
         temp_f31 =
             (f32) GetPersistentFighterData((s32) player_index)->match_count;
         return (s32) (100.0f *
@@ -1207,7 +1206,7 @@ void mnDiagram_InputProc(HSD_GObj* gobj)
     s32 i;
     u8* ptr2;
     u8* ptr3;
-    short new_var;
+    s16 new_var;
     u8* sorted = mnDiagram_804A0750.sorted_fighters;
     Diagram* data = mnDiagram_804D6C10->user_data;
     u32 input = mn_80229624(4);
@@ -1351,7 +1350,7 @@ void mnDiagram_InputProc(HSD_GObj* gobj)
             return;
         }
         sfxForward();
-        data->is_name_mode = (data->is_name_mode == 0) ? (1) : (count2);
+        data->is_name_mode = (data->is_name_mode == 0) ? 1 : count2;
         if (data->is_name_mode != 0) {
             count = GetNameCount();
             if (((s32) ((u8) mn_804A04F0.hovered_selection)) >= count) {

@@ -23,7 +23,6 @@
 #include "pl/types.h"
 
 #include <dolphin/mtx.h>
-#include <dolphin/os.h>
 #include <baselib/debug.h>
 #include <baselib/gobjplink.h>
 #include <baselib/objalloc.h>
@@ -226,7 +225,7 @@ void Player_80031AD0(int slot)
 
     // the commented line below makes more sense, but is off by one byte.
     // temp_vec = unused_ptr = ftMapping_list;
-    offset_arr = (s8*) (&ftMapping_list[0].extra_internal_id);
+    offset_arr = (&ftMapping_list[0].extra_internal_id);
 
     if (offset_arr[player->player_character * sizeof(ftMapping)] != -1) {
         player->flags.b2 = true;
@@ -1682,11 +1681,7 @@ u8 Player_GetFlagsAEBit1(s32 slot)
     return bit1;
 }
 
-#ifdef BUGFIX
-void Player_SetFlagsAEBit1(int slot, u8 bit1)
-#else
 u8 Player_SetFlagsAEBit1(int slot, u8 bit1)
-#endif
 {
     StaticPlayer* player;
     Player_CheckSlot(slot);

@@ -311,7 +311,7 @@ void grStadium_801D13E0(Ground_GObj* gobj)
 
     Ground_801C2ED0(jobj, gr->map_id);
     grAnime_801C8138(gobj, gr->map_id, 0);
-    mobj = (void*) lbDvd_GetPreloadedArchive(0x7D5);
+    mobj = lbDvd_GetPreloadedArchive(0x7D5);
     gr->u.stadium.xCC = mobj;
     if (mobj == NULL) {
         gr->u.stadium.xCC = HSD_MemAlloc(0x50000);
@@ -576,7 +576,7 @@ void grStadium_801D1B48(Ground_GObj* gobj)
         HSD_JObjSetScaleY(jobj, scale);
     }
 
-    HSD_JObjAddRotationZ(gp->u.stadium9.xD4_jobj, -0.5F * deg_to_rad);
+    HSD_JObjAddRotationZ(gp->u.stadium9.xD4_jobj, MTXDegToRad(-0.5F));
 
     if (gp->u.stadium9.xC4_b0) {
         gp->u.stadium9.xC4_b0 = false;

@@ -91,7 +91,7 @@ struct Toy {
     /* +198 */ char pad_198[0x19A - 0x198];
     /* +19A */ u16 x19A;
     /* +19C */ u16 x19C;
-    /* +19E */ u16 trophyTable[0x125];
+    /* +19E */ u16 trophyTable[TY_TROPHY_COUNT];
     /* +3E8 */ char pad_3E8[0x3EC - 0x3E8];
     /* +3EC */ s16 trophyCount;
 };
@@ -172,7 +172,7 @@ struct Toy26B8 {
     /* 0x199 */ u8 pad_199;
     /* 0x19A */ u16 x19A;
     /* 0x19C */ u16 x19C;
-    /* 0x19E */ u16 trophy_flags[293];
+    /* 0x19E */ u16 trophy_flags[TY_TROPHY_COUNT];
     /* 0x3E8 */ s16 selectedIdx;
     /* 0x3EA */ s16 selectedTrophyId;
     /* 0x3EC */ s16 trophy_count;
@@ -191,9 +191,11 @@ struct _Toy_804A26B8_t {
 STATIC_ASSERT(sizeof(struct _Toy_804A26B8_t) == 0xC);
 
 struct TyViewData {
-    u8 pad[4];
+    char pad_0[0x4];
     s8 x4;
+    char pad_5[0x3];
 };
+STATIC_ASSERT(sizeof(struct TyViewData) == 0x8);
 
 struct TyFiguponData {
     /* 0x00 */ HSD_GObj* x0;

@@ -603,7 +603,7 @@ HSD_RObj* HSD_RObjLoadDesc(HSD_RObjDesc* robjdesc)
 
     if (robjdesc != NULL) {
         robj = HSD_RObjAlloc();
-        robj->next = HSD_RObjLoadDesc((HSD_RObjDesc*) robjdesc->next);
+        robj->next = HSD_RObjLoadDesc(robjdesc->next);
         robj->flags = robjdesc->flags;
         switch (robj->flags & ROBJ_TYPE_MASK) {
         case REFTYPE_JOBJ:
@@ -675,7 +675,7 @@ HSD_RObj* HSD_RObjAlloc(void)
 {
     HSD_RObj* new = HSD_ObjAlloc(HSD_RObjGetAllocData());
     HSD_ASSERT(1032, new);
-    memset(new, 0, 0x1C);
+    memset(new, 0, sizeof(*new));
     return new;
 }
 
